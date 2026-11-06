@@ -64,7 +64,50 @@ public class Marker {
      * Example: a = "ACGTAC", b = "TTACGT", k = 4: the words of a are ACGT, CGTA, GTAC; only ACGT is in b, so the answer is 1.
      */
     public static int sharedWords(String a, String b, int k) {
-        // TODO Mission 4
-        return -1;
+        if (k <= 0 || a.length() < k || b.length() < k) return 0;
+        final long MOD = 1_000_000_007L;
+        final long BASE = 131;
+
+
+        long pow = 1;
+        for (int i = 0; i < k - 1; i++) pow = pow * BASE % MOD;
+
+
+        HashMap<Long, ArrayList<Integer>> windows = new HashMap<>();
+        long h = 0;
+        for (int i = 0; i < k; i++) h = (h * BASE + b.charAt(i)) % MOD;
+        windows.computeIfAbsent(h, x -> new ArrayList<>()).add(0);
+        for (int i = k; i < b.length(); i++) {
+            h = ((h - b.charAt(i - k) * pow % MOD + MOD) % MOD * BASE + b.charAt(i)) % MOD;
+            windows.computeIfAbsent(h, x -> new ArrayList<>()).add(i - k + 1);
+        }
+
+
+        int count = 0;
+        h = 0;
+        for (int i = 0; i < k; i++) h = (h * BASE + a.charAt(i)) % MOD;
+        if (found(windows, h, a, 0, b, k)) count++;
+        for (int i = k; i < a.length(); i++) {
+            h = ((h - a.charAt(i - k) * pow % MOD + MOD) % MOD * BASE + a.charAt(i)) % MOD;
+            if (found(windows, h, a, i - k + 1, b, k)) count++;
+        }
+        return count;
+    }
+
+    private static boolean found(HashMap<Long, ArrayList<Integer>> windows, long h,
+                                 String a, int posA, String b, int k) {
+        ArrayList<Integer> list = windows.get(h);
+        if (list == null) return false;
+        for (int posB : list) {
+            boolean same = true;
+            for (int t = 0; t < k; t++) {
+                if (a.charAt(posA + t) != b.charAt(posB + t)) {
+                    same = false;
+                    break;
+                }
+            }
+            if (same) return true;
+        }
+        return false;
     }
 }
