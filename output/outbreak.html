@@ -197,10 +197,10 @@ const misOK=[1,2,3,4,5].map(k=>lineOK.every((o,i)=>MIS[i]!==k||o)&&(k!==5||cover
 (function(){
  const board=$('board');
  NAMES.forEach((nm,i)=>{const ok=lineOK[i];const d=document.createElement('div');d.className='cell '+(ok?'ok':'bad');
-  d.innerHTML='<span class="n">M'+MIS[i]+' · '+nm+'</span><span><span class="v mono">'+D.my[i]+'</span> <span class="mark">'+(ok?'✓':'✗')+'</span></span>';board.appendChild(d);});
+  d.innerHTML='<span class="n">M'+MIS[i]+' � '+nm+'</span><span><span class="v mono">'+D.my[i]+'</span> <span class="mark">'+(ok?'?':'?')+'</span></span>';board.appendChild(d);});
  const names=['Mutations','Shared core','The marker','Copied words','Whom to test'];
  const prog=$('prog');let done=0;
- misOK.forEach((ok,i)=>{if(ok)done++;const a=document.createElement('a');a.href='#m'+(i+1);a.className='chip '+(ok?'ok':'bad');a.textContent=(ok?'✓ ':'✗ ')+(i+1)+' '+names[i];prog.appendChild(a);
+ misOK.forEach((ok,i)=>{if(ok)done++;const a=document.createElement('a');a.href='#m'+(i+1);a.className='chip '+(ok?'ok':'bad');a.textContent=(ok?'? ':'? ')+(i+1)+' '+names[i];prog.appendChild(a);
   const t=$('s'+(i+1));t.className='tag '+(ok?'ok':'bad');t.textContent=ok?'your program agrees with the lab':'your program does not agree yet';});
  const b=$('banner');
  if(done===5){b.className='banner win';b.innerHTML='<b>Outbreak contained.</b> All 5 missions agree with the lab. Make a screenshot of this page for your README.';}
@@ -228,7 +228,7 @@ function drawMap(){
  const my=ry+50;txt(x,'marker '+D.marker,pad,my-6,'#8ba2b4');x.strokeStyle='#fb7185';x.lineWidth=2;
  for(const p of D.hits){x.beginPath();x.moveTo(sx(p),my);x.lineTo(sx(p),my+14);x.stroke();ticks.push({x:sx(p),y:my+7,s:'marker '+D.marker+' at position '+p});}
  $('maplegend').innerHTML='<span><span class="dot" style="background:#fb7185"></span>marker '+D.marker+': '+D.hits.length+' hits</span>';
- c.onmousemove=e=>{const r=c.getBoundingClientRect(),mx=e.clientX-r.left,my2=e.clientY-r.top;let best=null,bd=60;for(const t of ticks){const dd=Math.abs(t.x-mx)*3+Math.abs(t.y-my2);if(dd<bd){bd=dd;best=t;}}$('maptip').textContent=best?best.s:' ';};
+ c.onmousemove=e=>{const r=c.getBoundingClientRect(),mx=e.clientX-r.left,my2=e.clientY-r.top;let best=null,bd=60;for(const t of ticks){const dd=Math.abs(t.x-mx)*3+Math.abs(t.y-my2);if(dd<bd){bd=dd;best=t;}}$('maptip').textContent=best?best.s:'�';};
 }
 
 /* ===== Mission 1: edit-distance map ===== */
@@ -255,7 +255,7 @@ function mod1(){
   if(step>60){const k=Math.floor((step-60)/30*E.path.length);x.strokeStyle='#fff';x.lineWidth=1.6;x.beginPath();
    for(let q=0;q<=Math.min(k,E.path.length-1);q++){const p=P(E.path[q][0],E.path[q][1]);q?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]);}x.stroke();}
   if(frac<1){const a=P(0,Math.min(t,m)),b=P(Math.min(t,n),Math.max(0,t-Math.min(t,n)));x.strokeStyle='rgba(255,255,255,.35)';x.setLineDash([4,4]);x.beginPath();x.moveTo(a[0],a[1]);x.lineTo(b[0],b[1]);x.stroke();x.setLineDash([]);}
-  txt(x,'B →',S-34,12,'#e8f0f6','11px system-ui');txt(x,'A ↓',4,S-6,'#e8f0f6','11px system-ui');
+  txt(x,'B ?',S-34,12,'#e8f0f6','11px system-ui');txt(x,'A ?',4,S-6,'#e8f0f6','11px system-ui');
   const cur=M1.cur||0;if(step>=90&&E.path.length){const q=Math.min(E.path.length-1,cur+Math.floor(win/2));const p=P(E.path[q][0],E.path[q][1]);x.fillStyle='#fbbf24';x.beginPath();x.arc(p[0],p[1],4,0,6.3);x.fill();}
   M1.box=c.getBoundingClientRect();
   $('t1').textContent=step<60?'filling the table: '+Math.round(frac*100)+'%':(step<90?'drawing the cheapest route':'done');
@@ -270,7 +270,7 @@ function mod1(){
     if(ch==='-'){x.strokeStyle='#506879';x.setLineDash([3,3]);rr(x,px+1,yy,bw-2,30,5);x.stroke();x.setLineDash([]);}
     else{x.fillStyle=NC[ch]+'33';rr(x,px+1,yy,bw-2,30,5);x.fill();x.strokeStyle=ty||NC[ch];x.lineWidth=ty?2:1;rr(x,px+1,yy,bw-2,30,5);x.stroke();x.lineWidth=1;
      txt(x,ch,px+bw/2,yy+20,NC[ch],'bold '+Math.max(9,Math.min(15,bw-6))+'px Consolas,Menlo,monospace','center');}}
-   const sym={'=':'|',s:'×',d:'del',i:'ins'}[c.t];txt(x,sym,px+bw/2,92,ty||'#506879','12px system-ui','center');
+   const sym={'=':'|',s:'?',d:'del',i:'ins'}[c.t];txt(x,sym,px+bw/2,92,ty||'#506879','12px system-ui','center');
    if(k%10===0)txt(x,String(q+k),px+2,30,'#5d768a','10px system-ui');}
   $('l1').innerHTML='<span><span class="dot" style="background:#fb7185"></span>replaced</span><span><span class="dot" style="background:#60a5fa"></span>removed in B</span><span><span class="dot" style="background:#fbbf24"></span>added in B</span>';
   if(M1.step>=90)drawMap(M1.step);
@@ -394,7 +394,7 @@ function mod4(){
    const cur=Mx.ha[p];let line1;
    if(win===0)line1='hash = the 12 letters read as a number  =  '+cur;
    else{const old=Mx.ha[p-1],rem=D.A.charCodeAt(p-1),add=D.A.charCodeAt(p+K-1);
-    line1='old hash '+old+'   remove '+D.A[p-1]+' ('+rem+' × '+Mx.r.top+')   shift × '+Mx.r.BASE+'   add '+D.A[p+K-1]+' ('+add+')   =  new hash '+cur;}
+    line1='old hash '+old+'   remove '+D.A[p-1]+' ('+rem+' ? '+Mx.r.top+')   shift ? '+Mx.r.BASE+'   add '+D.A[p+K-1]+' ('+add+')   =  new hash '+cur;}
    txt(x,line1,10,34+bw+54,'#e8f0f6','12px Consolas,Menlo,monospace');
    let l2=inB?'This hash is in the set of hashes of B. Compare the letters: ':'This hash is not in the set of hashes of B: the word is not in B.';
    if(inB)l2+=real?'equal. A shared word!':'DIFFERENT. A false alarm (a collision).';
@@ -435,7 +435,7 @@ function mod5(){
    if(!ch.length)msg='Person '+v+' is a leaf (testing costs '+T.cost[v]+'): take = '+dc.take[v]+', skip = 0.';
    else msg='Person '+v+' (cost '+T.cost[v]+'): take = '+T.cost[v]+' + '+ch.map(c=>'min('+dc.take[c]+', '+dc.skip[c]+')').join(' + ')+' = '+dc.take[v]+'.   skip = '+ch.map(c=>dc.take[c]).join(' + ')+' = '+dc.skip[v]+'.';}
   if(curDown>=0){const v=curDown;if(v===0)msg='The root: take = '+dc.take[0]+', skip = '+dc.skip[0]+'. Choose the smaller: '+(dc.tested[0]?'test':'do not test')+' person 0.';
-   else{const p=Tr.par[v];msg='Person '+v+': the parent '+p+' is '+(dc.tested[p]?'tested, so the link is covered and this person may be either: take '+dc.take[v]+' vs skip '+dc.skip[v]+' → '+(dc.tested[v]?'test':'skip')+'.':'not tested, so this person must be tested.');}}
+   else{const p=Tr.par[v];msg='Person '+v+': the parent '+p+' is '+(dc.tested[p]?'tested, so the link is covered and this person may be either: take '+dc.take[v]+' vs skip '+dc.skip[v]+' ? '+(dc.tested[v]?'test':'skip')+'.':'not tested, so this person must be tested.');}}
   if(s===2*n)msg='Done. The teal rings are the lab\'s choice: every link has a ring at one end at least.';
   $('g5').textContent=msg;
  }
